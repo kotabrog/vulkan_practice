@@ -3,7 +3,8 @@ use vulkanalia::prelude::v1_0::*;
 use vulkanalia::vk::KhrSwapchainExtension;
 use winit::window::Window;
 
-use crate::{AppData, QueueFamilyIndices, SwapchainSupport, create_image_view};
+use crate::{AppData, QueueFamilyIndices, SwapchainSupport};
+use crate::utility::create_image_view;
 
 pub unsafe fn create_swapchain(
     window: &Window,

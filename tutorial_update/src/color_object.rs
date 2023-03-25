@@ -1,7 +1,8 @@
 use anyhow::Result;
 use vulkanalia::prelude::v1_0::*;
 
-use crate::{AppData, create_image, create_image_view};
+use crate::AppData;
+use crate::utility::{create_image, create_image_view};
 
 pub unsafe fn create_color_objects(
     instance: &Instance,

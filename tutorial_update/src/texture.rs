@@ -4,7 +4,8 @@ use std::fs::File;
 use anyhow::{anyhow, Result};
 use vulkanalia::prelude::v1_0::*;
 
-use crate::{AppData,
+use crate::AppData;
+use crate::utility::{
     transition_image_layout,
     copy_buffer_to_image,
     create_buffer,

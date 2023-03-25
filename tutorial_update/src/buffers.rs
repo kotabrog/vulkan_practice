@@ -4,7 +4,8 @@ use std::ptr::copy_nonoverlapping as memcpy;
 use anyhow::Result;
 use vulkanalia::prelude::v1_0::*;
 
-use crate::{AppData, Vertex, UniformBufferObject, create_buffer, copy_buffer};
+use crate::{AppData, Vertex, UniformBufferObject};
+use crate::utility::{create_buffer, copy_buffer};
 
 pub unsafe fn create_vertex_buffer(
     instance: &Instance,
