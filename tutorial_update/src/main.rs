@@ -9,10 +9,8 @@ use std::mem::size_of;
 use std::ptr::copy_nonoverlapping as memcpy;
 
 use std::time::Instant;
-use std::fs::File;
-use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
-use std::io::BufReader;
+
 use log::*;
 use anyhow::{anyhow, Result};
 use thiserror::Error;
@@ -39,6 +37,7 @@ mod command_pool;
 mod color_object;
 mod depth_object;
 mod texture;
+mod model;
 
 use instance::create_instance;
 use physical_device::pick_physical_device;
@@ -50,6 +49,7 @@ use command_pool::create_command_pools;
 use color_object::create_color_objects;
 use depth_object::create_depth_objects;
 use texture::{create_texture_image, create_texture_image_view, create_texture_sampler};
+use model::load_model;
 
 const VALIDATION_ENABLED: bool =
     cfg!(debug_assertions);
@@ -538,55 +538,9 @@ pub struct AppData {
 }
 
 //================================================
-// Texture
-//================================================
-
-//================================================
 // Model
 //================================================
 
-fn load_model(data: &mut AppData) -> Result<()> {
-    let mut reader = BufReader::new(File::open("resources/viking_room.obj")?);
-
-    let (models, _) = tobj::load_obj_buf(
-        &mut reader,
-        &tobj::LoadOptions { triangulate: true, ..Default::default() },
-        |_| Ok(Default::default()),
-    )?;
-
-    let mut unique_vertices = HashMap::new();
-
-    for model in &models {
-        for index in &model.mesh.indices {
-            let pos_offset = (3 * index) as usize;
-            let tex_coord_offset = (2 * index) as usize;
-
-            let vertex = Vertex {
-                pos: glm::vec3(
-                    model.mesh.positions[pos_offset],
-                    model.mesh.positions[pos_offset + 1],
-                    model.mesh.positions[pos_offset + 2],
-                ),
-                color: glm::vec3(1.0, 1.0, 1.0),
-                tex_coord: glm::vec2(
-                    model.mesh.texcoords[tex_coord_offset],
-                    1.0 - model.mesh.texcoords[tex_coord_offset + 1],
-                ),
-            };
-
-            if let Some(index) = unique_vertices.get(&vertex) {
-                data.indices.push(*index as u32);
-            } else {
-                let index = data.vertices.len();
-                unique_vertices.insert(vertex, index);
-                data.vertices.push(vertex);
-                data.indices.push(index as u32);
-            }
-        }
-    }
-
-    Ok(())
-}
 
 //================================================
 // Buffers
