@@ -40,6 +40,7 @@ mod texture;
 mod model;
 mod buffers;
 mod descriptor;
+mod command_buffer;
 
 use instance::create_instance;
 use physical_device::pick_physical_device;
@@ -54,6 +55,7 @@ use texture::{create_texture_image, create_texture_image_view, create_texture_sa
 use model::load_model;
 use buffers::{create_vertex_buffer, create_index_buffer, create_uniform_buffers};
 use descriptor::{create_descriptor_pool, create_descriptor_sets};
+use command_buffer::create_command_buffers;
 
 const VALIDATION_ENABLED: bool =
     cfg!(debug_assertions);
@@ -542,29 +544,10 @@ pub struct AppData {
 }
 
 //================================================
-// Descriptors
-//================================================
-
-//================================================
 // Command Buffers
 //================================================
 
-unsafe fn create_command_buffers(device: &Device, data: &mut AppData) -> Result<()> {
-    let num_images = data.swapchain_images.len();
-    for image_index in 0..num_images {
-        let allocate_info = vk::CommandBufferAllocateInfo::builder()
-            .command_pool(data.command_pools[image_index])
-            .level(vk::CommandBufferLevel::PRIMARY)
-            .command_buffer_count(1);
 
-        let command_buffer = device.allocate_command_buffers(&allocate_info)?[0];
-        data.command_buffers.push(command_buffer);
-    }
-
-    data.secondary_command_buffers = vec![vec![]; data.swapchain_images.len()];
-
-    Ok(())
-}
 
 //================================================
 // Sync Objects
