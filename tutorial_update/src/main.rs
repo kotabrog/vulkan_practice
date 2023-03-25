@@ -41,6 +41,7 @@ mod model;
 mod buffers;
 mod descriptor;
 mod command_buffer;
+mod sync_object;
 
 use instance::create_instance;
 use physical_device::pick_physical_device;
@@ -56,6 +57,7 @@ use model::load_model;
 use buffers::{create_vertex_buffer, create_index_buffer, create_uniform_buffers};
 use descriptor::{create_descriptor_pool, create_descriptor_sets};
 use command_buffer::create_command_buffers;
+use sync_object::create_sync_objects;
 
 const VALIDATION_ENABLED: bool =
     cfg!(debug_assertions);
@@ -541,38 +543,6 @@ pub struct AppData {
     depth_image: vk::Image,
     depth_image_memory: vk::DeviceMemory,
     depth_image_view: vk::ImageView,
-}
-
-//================================================
-// Command Buffers
-//================================================
-
-
-
-//================================================
-// Sync Objects
-//================================================
-
-unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()> {
-    let semaphore_info = vk::SemaphoreCreateInfo::builder();
-    let fence_info = vk::FenceCreateInfo::builder()
-        .flags(vk::FenceCreateFlags::SIGNALED);
-
-    for _ in 0..MAX_FRAMES_IN_FLIGHT {
-        data.image_available_semaphores
-            .push(device.create_semaphore(&semaphore_info, None)?);
-        data.render_finished_semaphores
-            .push(device.create_semaphore(&semaphore_info, None)?);
-
-        data.in_flight_fences.push(device.create_fence(&fence_info, None)?);
-    }
-
-    data.images_in_flight = data.swapchain_images
-        .iter()
-        .map(|_| vk::Fence::null())
-        .collect();
-
-    Ok(())
 }
 
 //================================================
