@@ -1,0 +1,13 @@
+*
+!*/
+!*.rs
+!*.toml
+!*.lock
+!*.md
+!.gitignore
+!Makefile
+!*.frag
+!*.vert
+!*.sh
+!*.bat
+target/
