@@ -34,12 +34,14 @@ mod physical_device;
 mod logical_device;
 mod swapchain;
 mod pipeline;
+mod framebuffer;
 
 use instance::create_instance;
 use physical_device::pick_physical_device;
 use logical_device::create_logical_device;
 use swapchain::{create_swapchain, create_swapchain_image_views};
 use pipeline::{create_render_pass, create_descriptor_set_layout, create_pipeline};
+use framebuffer::create_framebuffers;
 
 const VALIDATION_ENABLED: bool =
     cfg!(debug_assertions);
@@ -528,33 +530,9 @@ pub struct AppData {
 }
 
 //================================================
-// Pipeline
-//================================================
-
-
-//================================================
 // Framebuffers
 //================================================
 
-unsafe fn create_framebuffers(device: &Device, data: &mut AppData) -> Result<()> {
-    data.framebuffers = data
-        .swapchain_image_views
-        .iter()
-        .map(|i| {
-            let attachments = &[data.color_image_view, data.depth_image_view, *i];
-            let create_info = vk::FramebufferCreateInfo::builder()
-                .render_pass(data.render_pass)
-                .attachments(attachments)
-                .width(data.swapchain_extent.width)
-                .height(data.swapchain_extent.height)
-                .layers(1);
-
-            device.create_framebuffer(&create_info, None)
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-
-    Ok(())
-}
 
 //================================================
 // Command Pool
