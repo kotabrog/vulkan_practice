@@ -35,6 +35,7 @@ mod logical_device;
 mod swapchain;
 mod pipeline;
 mod framebuffer;
+mod command_pool;
 
 use instance::create_instance;
 use physical_device::pick_physical_device;
@@ -42,6 +43,7 @@ use logical_device::create_logical_device;
 use swapchain::{create_swapchain, create_swapchain_image_views};
 use pipeline::{create_render_pass, create_descriptor_set_layout, create_pipeline};
 use framebuffer::create_framebuffers;
+use command_pool::create_command_pools;
 
 const VALIDATION_ENABLED: bool =
     cfg!(debug_assertions);
@@ -530,43 +532,9 @@ pub struct AppData {
 }
 
 //================================================
-// Framebuffers
-//================================================
-
-
-//================================================
 // Command Pool
 //================================================
 
-unsafe fn create_command_pools(
-    instance: &Instance,
-    device: &Device,
-    data: &mut AppData,
-) -> Result<()> {
-    data.command_pool = create_command_pool(instance, device, data)?;
-
-    let num_images = data.swapchain_images.len();
-    for _ in 0..num_images {
-        let command_pool = create_command_pool(instance, device, data)?;
-        data.command_pools.push(command_pool);
-    }
-
-    Ok(())
-}
-
-unsafe fn create_command_pool(
-    instance: &Instance,
-    device: &Device,
-    data: &mut AppData,
-) -> Result<vk::CommandPool> {
-    let indices = QueueFamilyIndices::get(instance, data, data.physical_device)?;
-
-    let info = vk::CommandPoolCreateInfo::builder()
-        .flags(vk::CommandPoolCreateFlags::TRANSIENT)
-        .queue_family_index(indices.graphics);
-
-    Ok(device.create_command_pool(&info, None)?)
-}
 
 //================================================
 // Color Objects
