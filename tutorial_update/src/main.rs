@@ -36,6 +36,7 @@ mod swapchain;
 mod pipeline;
 mod framebuffer;
 mod command_pool;
+mod color_object;
 
 use instance::create_instance;
 use physical_device::pick_physical_device;
@@ -44,6 +45,7 @@ use swapchain::{create_swapchain, create_swapchain_image_views};
 use pipeline::{create_render_pass, create_descriptor_set_layout, create_pipeline};
 use framebuffer::create_framebuffers;
 use command_pool::create_command_pools;
+use color_object::create_color_objects;
 
 const VALIDATION_ENABLED: bool =
     cfg!(debug_assertions);
@@ -532,47 +534,9 @@ pub struct AppData {
 }
 
 //================================================
-// Command Pool
-//================================================
-
-
-//================================================
 // Color Objects
 //================================================
 
-unsafe fn create_color_objects(
-    instance: &Instance,
-    device: &Device,
-    data: &mut AppData,
-) -> Result<()> {
-    let (color_image, color_image_memory) = create_image(
-        instance,
-        device,
-        data,
-        data.swapchain_extent.width,
-        data.swapchain_extent.height,
-        1,
-        data.msaa_samples,
-        data.swapchain_format,
-        vk::ImageTiling::OPTIMAL,
-        vk::ImageUsageFlags::COLOR_ATTACHMENT
-            | vk::ImageUsageFlags::TRANSIENT_ATTACHMENT,
-        vk::MemoryPropertyFlags::DEVICE_LOCAL,
-    )?;
-
-    data.color_image = color_image;
-    data.color_image_memory = color_image_memory;
-
-    data.color_image_view = create_image_view(
-        device,
-        data.color_image,
-        data.swapchain_format,
-        vk::ImageAspectFlags::COLOR,
-        1,
-    )?;
-
-    Ok(())
-}
 
 //================================================
 // Depth Objects
