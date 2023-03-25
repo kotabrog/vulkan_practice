@@ -38,6 +38,7 @@ mod color_object;
 mod depth_object;
 mod texture;
 mod model;
+mod buffers;
 
 use instance::create_instance;
 use physical_device::pick_physical_device;
@@ -50,6 +51,7 @@ use color_object::create_color_objects;
 use depth_object::create_depth_objects;
 use texture::{create_texture_image, create_texture_image_view, create_texture_sampler};
 use model::load_model;
+use buffers::{create_vertex_buffer, create_index_buffer, create_uniform_buffers};
 
 const VALIDATION_ENABLED: bool =
     cfg!(debug_assertions);
@@ -538,133 +540,9 @@ pub struct AppData {
 }
 
 //================================================
-// Model
-//================================================
-
-
-//================================================
 // Buffers
 //================================================
 
-unsafe fn create_vertex_buffer(
-    instance: &Instance,
-    device: &Device,
-    data: &mut AppData,
-) -> Result<()> {
-    let size = (size_of::<Vertex>() * data.vertices.len()) as u64;
-
-    let (staging_buffer, staging_buffer_memory) = create_buffer(
-        instance,
-        device,
-        data,
-        size,
-        vk::BufferUsageFlags::TRANSFER_SRC,
-        vk::MemoryPropertyFlags::HOST_COHERENT | vk::MemoryPropertyFlags::HOST_VISIBLE,
-    )?;
-
-    let memory = device.map_memory(
-        staging_buffer_memory,
-        0,
-        size,
-        vk::MemoryMapFlags::empty(),
-    )?;
-
-    memcpy(data.vertices.as_ptr(), memory.cast(), data.vertices.len());
-
-    device.unmap_memory(staging_buffer_memory);
-
-    let (vertex_buffer, vertex_buffer_memory) = create_buffer(
-        instance,
-        device,
-        data,
-        size,
-        vk::BufferUsageFlags::TRANSFER_DST | vk::BufferUsageFlags::VERTEX_BUFFER,
-        vk::MemoryPropertyFlags::DEVICE_LOCAL,
-    )?;
-
-    data.vertex_buffer = vertex_buffer;
-    data.vertex_buffer_memory = vertex_buffer_memory;
-
-    copy_buffer(device, data, staging_buffer, vertex_buffer, size)?;
-
-    device.destroy_buffer(staging_buffer, None);
-    device.free_memory(staging_buffer_memory, None);
-
-    Ok(())
-}
-
-unsafe fn create_index_buffer(
-    instance: &Instance,
-    device: &Device,
-    data: &mut AppData,
-) -> Result<()> {
-    // let size = (size_of::<u16>() * INDICES.len()) as u64;
-    let size = (size_of::<u32>() * data.indices.len()) as u64;
-
-    let (staging_buffer, staging_buffer_memory) = create_buffer(
-        instance,
-        device,
-        data,
-        size,
-        vk::BufferUsageFlags::TRANSFER_SRC,
-        vk::MemoryPropertyFlags::HOST_COHERENT | vk::MemoryPropertyFlags::HOST_VISIBLE,
-    )?;
-
-    let memory = device.map_memory(
-        staging_buffer_memory,
-        0,
-        size,
-        vk::MemoryMapFlags::empty(),
-    )?;
-
-    memcpy(data.indices.as_ptr(), memory.cast(), data.indices.len());
-
-    device.unmap_memory(staging_buffer_memory);
-
-    let (index_buffer, index_buffer_memory) = create_buffer(
-        instance,
-        device,
-        data,
-        size,
-        vk::BufferUsageFlags::TRANSFER_DST | vk::BufferUsageFlags::INDEX_BUFFER,
-        vk::MemoryPropertyFlags::DEVICE_LOCAL,
-    )?;
-
-    data.index_buffer = index_buffer;
-    data.index_buffer_memory = index_buffer_memory;
-
-    copy_buffer(device, data, staging_buffer, index_buffer, size)?;
-
-    device.destroy_buffer(staging_buffer, None);
-    device.free_memory(staging_buffer_memory, None);
-
-    Ok(())
-}
-
-unsafe fn create_uniform_buffers(
-    instance: &Instance,
-    device: &Device,
-    data: &mut AppData,
-) -> Result<()> {
-    data.uniform_buffers.clear();
-    data.uniform_buffers_memory.clear();
-
-    for _ in 0..data.swapchain_images.len() {
-        let (uniform_buffer, uniform_buffer_memory) = create_buffer(
-            instance,
-            device,
-            data,
-            size_of::<UniformBufferObject>() as u64,
-            vk::BufferUsageFlags::UNIFORM_BUFFER,
-            vk::MemoryPropertyFlags::HOST_COHERENT | vk::MemoryPropertyFlags::HOST_VISIBLE,
-        )?;
-
-        data.uniform_buffers.push(uniform_buffer);
-        data.uniform_buffers_memory.push(uniform_buffer_memory);
-    }
-
-    Ok(())
-}
 
 //================================================
 // Descriptors
@@ -786,16 +664,16 @@ unsafe fn create_sync_objects(device: &Device, data: &mut AppData) -> Result<()>
 
 #[derive(Debug, Error)]
 #[error("Missing {0}.")]
-pub struct SuitabilityError(pub &'static str);
+struct SuitabilityError(pub &'static str);
 
 #[derive(Copy, Clone, Debug)]
-pub struct QueueFamilyIndices {
+struct QueueFamilyIndices {
     graphics: u32,
     present: u32,
 }
 
 impl QueueFamilyIndices {
-    pub unsafe fn get(
+    unsafe fn get(
         instance: &Instance,
         data: &AppData,
         physical_device: vk::PhysicalDevice,
@@ -829,14 +707,14 @@ impl QueueFamilyIndices {
 }
 
 #[derive(Clone, Debug)]
-pub struct SwapchainSupport {
+struct SwapchainSupport {
     capabilities: vk::SurfaceCapabilitiesKHR,
     formats: Vec<vk::SurfaceFormatKHR>,
     present_modes: Vec<vk::PresentModeKHR>,
 }
 
 impl SwapchainSupport {
-    pub unsafe fn get(
+    unsafe fn get(
         instance: &Instance,
         data: &AppData,
         physical_device: vk::PhysicalDevice,
@@ -864,7 +742,7 @@ struct UniformBufferObject {
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
-pub struct Vertex {
+struct Vertex {
     pos: glm::Vec3,
     color: glm::Vec3,
     tex_coord: glm::Vec2,
