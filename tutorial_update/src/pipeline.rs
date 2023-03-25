@@ -3,7 +3,6 @@ use vulkanalia::prelude::v1_0::*;
 
 use crate::{AppData, Vertex, get_depth_format};
 
-
 pub unsafe fn create_render_pass(
     instance: &Instance,
     device: &Device,
