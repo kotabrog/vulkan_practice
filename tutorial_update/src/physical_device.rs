@@ -4,7 +4,8 @@ use log::*;
 use anyhow::{anyhow, Result};
 use vulkanalia::prelude::v1_0::*;
 
-use crate::{AppData, QueueFamilyIndices, SwapchainSupport, DEVICE_EXTENSIONS, SuitabilityError};
+use crate::{AppData, DEVICE_EXTENSIONS};
+use crate::structs::{QueueFamilyIndices, SwapchainSupport, SuitabilityError};
 
 pub unsafe fn pick_physical_device(instance: &Instance, data: &mut AppData) -> Result<()> {
     for physical_device in instance.enumerate_physical_devices()? {

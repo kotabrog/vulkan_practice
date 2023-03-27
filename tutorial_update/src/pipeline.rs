@@ -1,7 +1,8 @@
 use anyhow::{anyhow, Result};
 use vulkanalia::prelude::v1_0::*;
 
-use crate::{AppData, Vertex};
+use crate::AppData;
+use crate::structs::Vertex;
 use crate::utility::get_depth_format;
 
 pub unsafe fn create_render_pass(

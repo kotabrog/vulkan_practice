@@ -3,7 +3,8 @@ use std::mem::size_of;
 use anyhow::Result;
 use vulkanalia::prelude::v1_0::*;
 
-use crate::{AppData, UniformBufferObject};
+use crate::AppData;
+use crate::structs::UniformBufferObject;
 
 pub unsafe fn create_descriptor_pool(device: &Device, data: &mut AppData) -> Result<()> {
     let ubo_size = vk::DescriptorPoolSize::builder()

@@ -5,10 +5,11 @@ use std::io::BufReader;
 use anyhow::Result;
 use nalgebra_glm as glm;
 
-use crate::{AppData, Vertex};
+use crate::AppData;
+use crate::structs::Vertex;
 
-pub fn load_model(data: &mut AppData) -> Result<()> {
-    let mut reader = BufReader::new(File::open("resources/viking_room.obj")?);
+pub fn load_model(data: &mut AppData, path: &str) -> Result<()> {
+    let mut reader = BufReader::new(File::open(path)?);
 
     let (models, _) = tobj::load_obj_buf(
         &mut reader,
