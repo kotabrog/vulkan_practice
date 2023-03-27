@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use vulkanalia::prelude::v1_0::*;
 
-use crate::AppData;
+use crate::app::AppData;
 use crate::structs::Vertex;
 use crate::utility::get_depth_format;
 

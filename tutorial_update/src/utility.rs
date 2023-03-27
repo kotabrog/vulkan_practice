@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use vulkanalia::prelude::v1_0::*;
 
-use crate::AppData;
+use crate::app::AppData;
 
 //================================================
 // Shared (Buffers)
@@ -137,7 +137,7 @@ pub unsafe fn transition_image_layout(
     device: &Device,
     data: &AppData,
     image: vk::Image,
-    format: vk::Format,
+    _format: vk::Format,
     old_layout: vk::ImageLayout,
     new_layout: vk::ImageLayout,
     mip_levels: u32,

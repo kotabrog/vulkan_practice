@@ -35,7 +35,7 @@ pub mod turorial;
 /// Our Vulkan app.
 #[derive(Debug)]
 pub struct App {
-    entry: Entry,
+    _entry: Entry,
     instance: Instance,
     data: AppData,
     pub device: Device,
@@ -76,7 +76,7 @@ impl App {
         create_command_buffers(&device, &mut data)?;
         create_sync_objects(&device, &mut data)?;
         Ok(Self {
-            entry,
+            _entry: entry,
             instance,
             data,
             device,

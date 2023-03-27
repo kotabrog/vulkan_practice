@@ -1,7 +1,7 @@
 use anyhow::Result;
 use vulkanalia::prelude::v1_0::*;
 
-use crate::AppData;
+use crate::app::AppData;
 
 pub unsafe fn create_command_buffers(device: &Device, data: &mut AppData) -> Result<()> {
     let num_images = data.swapchain_images.len();

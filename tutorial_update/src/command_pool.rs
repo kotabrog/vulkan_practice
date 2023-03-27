@@ -1,7 +1,7 @@
 use anyhow::Result;
 use vulkanalia::prelude::v1_0::*;
 
-use crate::AppData;
+use crate::app::AppData;
 use crate::structs::QueueFamilyIndices;
 
 pub unsafe fn create_command_pools(

@@ -7,7 +7,7 @@ use nalgebra_glm as glm;
 use vulkanalia::prelude::v1_0::*;
 use vulkanalia::vk::KhrSurfaceExtension;
 
-use crate::AppData;
+use crate::app::AppData;
 
 //================================================
 // Structs
@@ -38,7 +38,7 @@ impl QueueFamilyIndices {
             .map(|i| i as u32);
 
         let mut present = None;
-        for (index, properties) in properties.iter().enumerate() {
+        for (index, _properties) in properties.iter().enumerate() {
             if instance.get_physical_device_surface_support_khr(
                 physical_device,
                 index as u32,

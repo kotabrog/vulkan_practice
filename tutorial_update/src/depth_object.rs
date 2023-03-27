@@ -1,7 +1,7 @@
 use anyhow::Result;
 use vulkanalia::prelude::v1_0::*;
 
-use crate::AppData;
+use crate::app::AppData;
 use crate::utility::{create_image, create_image_view, get_depth_format};
 
 pub unsafe fn create_depth_objects(

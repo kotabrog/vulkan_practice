@@ -5,7 +5,7 @@ use std::io::BufReader;
 use anyhow::Result;
 use nalgebra_glm as glm;
 
-use crate::AppData;
+use crate::app::AppData;
 use crate::structs::Vertex;
 
 pub fn load_model(data: &mut AppData, path: &str) -> Result<()> {

@@ -4,7 +4,8 @@ use log::*;
 use anyhow::{anyhow, Result};
 use vulkanalia::prelude::v1_0::*;
 
-use crate::{AppData, DEVICE_EXTENSIONS};
+use crate::DEVICE_EXTENSIONS;
+use crate::app::AppData;
 use crate::structs::{QueueFamilyIndices, SwapchainSupport, SuitabilityError};
 
 pub unsafe fn pick_physical_device(instance: &Instance, data: &mut AppData) -> Result<()> {

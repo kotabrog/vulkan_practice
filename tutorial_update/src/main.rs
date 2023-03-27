@@ -1,50 +1,12 @@
-#![allow(
-    dead_code,
-    unused_variables,
-    clippy::too_many_arguments,
-    clippy::unnecessary_wraps
-)]
-
 use anyhow::Result;
 // use lazy_static::lazy_static;
-use vulkanalia::prelude::v1_0::*;
 use winit::dpi::LogicalSize;
 use winit::event_loop::EventLoop;
 use winit::window::WindowBuilder;
 
-mod instance;
-mod physical_device;
-mod logical_device;
-mod swapchain;
-mod pipeline;
-mod framebuffer;
-mod command_pool;
-mod color_object;
-mod depth_object;
-mod texture;
-mod model;
-mod buffers;
-mod descriptor;
-mod command_buffer;
-mod sync_object;
-mod utility;
-mod structs;
-mod app;
-mod event;
-
-use app::{AppData, App};
-use app::turorial::TutorialApp;
-use event::EventHandler;
-
-const VALIDATION_ENABLED: bool =
-    cfg!(debug_assertions);
-
-const VALIDATION_LAYER: vk::ExtensionName =
-    vk::ExtensionName::from_bytes(b"VK_LAYER_KHRONOS_validation");
-
-const DEVICE_EXTENSIONS: &[vk::ExtensionName] = &[vk::KHR_SWAPCHAIN_EXTENSION.name];
-
-const MAX_FRAMES_IN_FLIGHT: usize = 2;
+use tutorial_update::app::App;
+use tutorial_update::app::turorial::TutorialApp;
+use tutorial_update::event::EventHandler;
 
 // lazy_static! {
 //     static ref VERTICES: Vec<Vertex> = vec![

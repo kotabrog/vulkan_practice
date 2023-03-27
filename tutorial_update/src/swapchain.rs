@@ -3,7 +3,7 @@ use vulkanalia::prelude::v1_0::*;
 use vulkanalia::vk::KhrSwapchainExtension;
 use winit::window::Window;
 
-use crate::AppData;
+use crate::app::AppData;
 use crate::structs::{QueueFamilyIndices, SwapchainSupport};
 use crate::utility::create_image_view;
 

@@ -3,7 +3,8 @@ use std::collections::HashSet;
 use anyhow::Result;
 use vulkanalia::prelude::v1_0::*;
 
-use crate::{AppData, DEVICE_EXTENSIONS, VALIDATION_ENABLED, VALIDATION_LAYER};
+use crate::{DEVICE_EXTENSIONS, VALIDATION_ENABLED, VALIDATION_LAYER};
+use crate::app::AppData;
 use crate::structs::QueueFamilyIndices;
 
 pub unsafe fn create_logical_device(
