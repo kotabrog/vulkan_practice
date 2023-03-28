@@ -29,6 +29,7 @@ use crate::descriptor::{create_descriptor_pool, create_descriptor_sets};
 use crate::command_buffer::create_command_buffers;
 use crate::sync_object::create_sync_objects;
 use crate::structs::UniformBufferObject;
+use crate::event::mouse::MouseState;
 
 pub mod turorial;
 pub mod one_model_view;
@@ -44,6 +45,7 @@ pub struct App {
     pub resized: bool,
     pub models: usize,
     pub app_support: Box<dyn AppSupport>,
+    pub mouse_state: MouseState,
 }
 
 impl App {
@@ -84,7 +86,8 @@ impl App {
             frame: 0,
             resized: false,
             models: 1,
-            app_support: Box::new(app_support)
+            app_support: Box::new(app_support),
+            mouse_state: MouseState::new(),
         })
     }
 

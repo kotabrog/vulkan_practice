@@ -1,4 +1,4 @@
-use winit::event::{Event, WindowEvent};
+use winit::event::{Event, WindowEvent, DeviceEvent};
 use winit::event_loop::ControlFlow;
 use winit::window::Window;
 use winit::dpi::PhysicalSize;
@@ -6,8 +6,10 @@ use winit::dpi::PhysicalSize;
 use crate::app::App;
 // use keyboard::models_up_down;
 use keyboard::translate_key;
+use mouse::{mouse_click, mouse_move};
 
 mod keyboard;
+pub mod mouse;
 
 pub struct EventHandler {
     destroying: bool,
@@ -28,14 +30,21 @@ impl EventHandler {
             // Render a frame if our Vulkan app is not being destroyed.
             Event::MainEventsCleared if !self.destroying && !self.minimized =>
                 self.render(app, window),
-            Event::WindowEvent { event: WindowEvent::Resized(size), .. } =>
-                self.resize(size, app),
-            // Destroy our Vulkan app.
-            Event::WindowEvent { event: WindowEvent::CloseRequested, .. } =>
-                self.close(app, control_flow),
-            Event::WindowEvent { event: WindowEvent::KeyboardInput { input, .. }, .. } =>
-                translate_key(app, input),
-                // models_up_down(app, input),
+            Event::WindowEvent { event, .. } => {
+                match event {
+                    WindowEvent::Resized(size) => self.resize(size, app),
+                    WindowEvent::CloseRequested => self.close(app, control_flow),
+                    WindowEvent::KeyboardInput { input, .. } => translate_key(app, input),
+                    WindowEvent::MouseInput { state, button, .. } => _ = mouse_click(app, state, button),
+                    _ => {}
+                }
+            },
+            Event::DeviceEvent { event, .. } => {
+                match event {
+                    DeviceEvent::MouseMotion { delta } => mouse_move(app, delta),
+                    _ => {}
+                }
+            },
             _ => {}
         }
     }
