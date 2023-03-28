@@ -4,6 +4,7 @@ use winit::event::{ElementState, MouseButton};
 use crate::app::App;
 
 const MOUSE_MOVE_RATE: f32 = 250.0;
+const MOUSE_ROTATE_RATE: f32 = 250.0;
 
 #[derive(Debug)]
 pub struct MouseState {
@@ -59,6 +60,10 @@ pub fn mouse_move(app: &mut App, delta: (f64, f64)) {
             0.0,
             delta.0 as f32 / MOUSE_MOVE_RATE,
             -delta.1 as f32 / MOUSE_MOVE_RATE,
+        )),
+        (true, false) => app.rotate(glm::vec2(
+            delta.0 as f32 / MOUSE_ROTATE_RATE,
+            delta.1 as f32 / MOUSE_ROTATE_RATE,
         )),
         _ => {},
     }

@@ -383,6 +383,10 @@ impl App {
     pub fn translate(&mut self, vec: glm::Vec3) {
         self.app_support.translate(vec);
     }
+
+    pub fn rotate(&mut self, vec: glm::Vec2) {
+        self.app_support.rotate(vec);
+    }
 }
 
 /// The Vulkan handles and associated properties used by our Vulkan app.
@@ -448,4 +452,5 @@ pub trait AppSupport: Debug {
     fn make_opacity(&self, model_index: usize) -> f32;
     fn make_model_matrix(&self, model_index: usize) -> glm::Mat4;
     fn translate(&mut self, vec: glm::Vec3);
+    fn rotate(&mut self, vec: glm::Vec2);
 }

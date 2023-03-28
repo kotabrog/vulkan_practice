@@ -14,6 +14,7 @@ pub struct OneModelApp {
     texture: String,
     start: Instant,
     translate_vec: glm::Vec3,
+    angle: glm::Vec2,
 }
 
 impl OneModelApp {
@@ -23,6 +24,7 @@ impl OneModelApp {
             texture: texture.to_string(),
             start: Instant::now(),
             translate_vec: glm::vec3(0.0, 0.0, 0.0),
+            angle: glm::vec2(0.0, 0.0),
         }
     }
 }
@@ -58,21 +60,23 @@ impl AppSupport for OneModelApp {
     }
 
     fn make_model_matrix(&self, _model_index: usize) -> glm::Mat4 {
-        let model = glm::translate(
+        let mut model = glm::translate(
             &glm::identity(),
             &self.translate_vec,
         );
 
-        let time = self.get_elapsed_time();
-
-        glm::rotate(
-            &model,
-            time * glm::radians(&glm::vec1(90.0))[0],
-            &glm::vec3(0.0, 0.0, 1.0),
-        )
+        model = glm::rotate_z(&model, self.angle.x);
+        glm::rotate_y(&model, self.angle.y)
     }
 
     fn translate(&mut self, vec: glm::Vec3) {
         self.translate_vec += vec;
+    }
+
+    fn rotate(&mut self, vec: glm::Vec2) {
+        let two_pi = std::f32::consts::PI * 2.0;
+        self.angle += vec;
+        self.angle.x %= two_pi;
+        self.angle.y %= two_pi;
     }
 }

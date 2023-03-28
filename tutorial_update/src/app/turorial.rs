@@ -74,4 +74,5 @@ impl AppSupport for TutorialApp {
     }
 
     fn translate(&mut self, _vec: glm::Vec3) { }
+    fn rotate(&mut self, _vec: glm::Vec2) { }
 }
