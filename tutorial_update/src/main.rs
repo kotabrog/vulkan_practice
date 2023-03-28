@@ -5,7 +5,8 @@ use winit::event_loop::EventLoop;
 use winit::window::WindowBuilder;
 
 use tutorial_update::app::App;
-use tutorial_update::app::turorial::TutorialApp;
+// use tutorial_update::app::turorial::TutorialApp;
+use tutorial_update::app::one_model_view::OneModelApp;
 use tutorial_update::event::EventHandler;
 
 // lazy_static! {
@@ -41,7 +42,8 @@ fn main() -> Result<()> {
 
     // App
 
-    let app_support = TutorialApp::new("resources/viking_room.obj", "resources/viking_room.png");
+    // let app_support = TutorialApp::new("resources/viking_room.obj", "resources/viking_room.png");
+    let app_support = OneModelApp::new("resources/viking_room.obj", "resources/viking_room.png");
     let mut app = unsafe { App::create(&window, app_support)? };
     event_loop.run(move |event, _, control_flow| {
         event_handler.run(&mut app, &window, event, control_flow)

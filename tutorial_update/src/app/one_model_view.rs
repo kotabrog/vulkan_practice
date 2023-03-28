@@ -9,23 +9,25 @@ use crate::model::load_model;
 use crate::texture::create_texture_image;
 
 #[derive(Clone, Debug)]
-pub struct TutorialApp {
+pub struct OneModelApp {
     obj: String,
     texture: String,
     start: Instant,
+    translate_vec: glm::Vec3,
 }
 
-impl TutorialApp {
+impl OneModelApp {
     pub fn new(obj: &str, texture: &str) -> Self {
-        TutorialApp {
+        OneModelApp {
             obj: obj.to_string(),
             texture: texture.to_string(),
             start: Instant::now(),
+            translate_vec: glm::vec3(0.0, 0.0, 0.0),
         }
     }
 }
 
-impl AppSupport for TutorialApp {
+impl AppSupport for OneModelApp {
     fn make_model(&self, data: &mut AppData) -> Result<()> {
         load_model(data, &self.obj)
     }
@@ -51,17 +53,14 @@ impl AppSupport for TutorialApp {
         )
     }
 
-    fn make_opacity(&self, model_index: usize) -> f32 {
-        (model_index + 1) as f32 * 0.25
+    fn make_opacity(&self, _model_index: usize) -> f32 {
+        1.0
     }
 
-    fn make_model_matrix(&self, model_index: usize) -> glm::Mat4 {
-        let y = (((model_index % 2) as f32) * 2.5) - 1.25;
-        let z = (((model_index / 2) as f32) * -2.0) + 1.0;
-
+    fn make_model_matrix(&self, _model_index: usize) -> glm::Mat4 {
         let model = glm::translate(
             &glm::identity(),
-            &glm::vec3(0.0, y, z),
+            &self.translate_vec,
         );
 
         let time = self.get_elapsed_time();
@@ -73,5 +72,7 @@ impl AppSupport for TutorialApp {
         )
     }
 
-    fn translate(&mut self, _vec: glm::Vec3) { }
+    fn translate(&mut self, vec: glm::Vec3) {
+        self.translate_vec += vec;
+    }
 }

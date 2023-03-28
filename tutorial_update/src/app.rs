@@ -31,6 +31,7 @@ use crate::sync_object::create_sync_objects;
 use crate::structs::UniformBufferObject;
 
 pub mod turorial;
+pub mod one_model_view;
 
 /// Our Vulkan app.
 #[derive(Debug)]
@@ -375,6 +376,10 @@ impl App {
         }
         self.instance.destroy_instance(None);
     }
+
+    pub fn translate(&mut self, vec: glm::Vec3) {
+        self.app_support.translate(vec);
+    }
 }
 
 /// The Vulkan handles and associated properties used by our Vulkan app.
@@ -439,4 +444,5 @@ pub trait AppSupport: Debug {
     fn make_view_obj(&self) -> glm::Mat4;
     fn make_opacity(&self, model_index: usize) -> f32;
     fn make_model_matrix(&self, model_index: usize) -> glm::Mat4;
+    fn translate(&mut self, vec: glm::Vec3);
 }
