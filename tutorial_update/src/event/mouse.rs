@@ -1,10 +1,11 @@
 use nalgebra_glm as glm;
-use winit::event::{ElementState, MouseButton};
+use winit::event::{ElementState, MouseButton, MouseScrollDelta};
 
 use crate::app::App;
 
 const MOUSE_MOVE_RATE: f32 = 250.0;
 const MOUSE_ROTATE_RATE: f32 = 250.0;
+const MOUSE_WHEEL_RATE: f32 = 3.0;
 
 #[derive(Debug)]
 pub struct MouseState {
@@ -67,4 +68,12 @@ pub fn mouse_move(app: &mut App, delta: (f64, f64)) {
         )),
         _ => {},
     }
+}
+
+pub fn mouse_wheel(app: &mut App, delta: MouseScrollDelta) {
+    let vertical_scroll = match delta {
+        winit::event::MouseScrollDelta::LineDelta(_x, y) => y,
+        winit::event::MouseScrollDelta::PixelDelta(position) => position.y as f32,
+    };
+    app.translate(glm::vec3(vertical_scroll / MOUSE_WHEEL_RATE, 0.0, 0.0));
 }

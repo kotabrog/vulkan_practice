@@ -6,7 +6,7 @@ use winit::dpi::PhysicalSize;
 use crate::app::App;
 // use keyboard::models_up_down;
 use keyboard::translate_key;
-use mouse::{mouse_click, mouse_move};
+use mouse::{mouse_click, mouse_move, mouse_wheel};
 
 mod keyboard;
 pub mod mouse;
@@ -42,6 +42,7 @@ impl EventHandler {
             Event::DeviceEvent { event, .. } => {
                 match event {
                     DeviceEvent::MouseMotion { delta } => mouse_move(app, delta),
+                    DeviceEvent::MouseWheel { delta } => mouse_wheel(app, delta),
                     _ => {}
                 }
             },
